@@ -1,14 +1,15 @@
 <?php
 include '../includes/db.php';
 
-$query = "
-SELECT users.name AS student, books.title AS book, issued_books.issue_date
-FROM issued_books
-JOIN users ON issued_books.user_id = users.id
-JOIN books ON issued_books.book_id = books.id
-";
-
-$result = mysqli_query($conn, $query);
+$result = mysqli_query($conn, "
+    SELECT users.name AS student,
+           books.title AS book,
+           issued_books.issue_date,
+           issued_books.return_date
+    FROM issued_books
+    JOIN users ON issued_books.user_id = users.id
+    JOIN books ON issued_books.book_id = books.id
+");
 ?>
 
 <!DOCTYPE html>
@@ -30,23 +31,27 @@ $result = mysqli_query($conn, $query);
 </div>
 
 <div class="main">
-    <h2>Issued Books History</h2>
+    <h1>Issued Books</h1>
 
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Student</th>
-            <th>Book</th>
-            <th>Issue Date</th>
-        </tr>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Book</th>
+                <th>Issue Date</th>
+                <th>Return Date</th>
+            </tr>
 
-        <?php while($row = mysqli_fetch_assoc($result)){ ?>
-        <tr>
-            <td><?php echo $row['student']; ?></td>
-            <td><?php echo $row['book']; ?></td>
-            <td><?php echo $row['issue_date']; ?></td>
-        </tr>
-        <?php } ?>
-    </table>
+            <?php while($row = mysqli_fetch_assoc($result)) { ?>
+            <tr>
+                <td><?= $row['student'] ?></td>
+                <td><?= $row['book'] ?></td>
+                <td><?= $row['issue_date'] ?></td>
+                <td><?= $row['return_date'] ?? 'Not Returned' ?></td>
+            </tr>
+            <?php } ?>
+        </table>
+    </div>
 </div>
 
 </body>
